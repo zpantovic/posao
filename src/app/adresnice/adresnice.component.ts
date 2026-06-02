@@ -207,7 +207,7 @@ export class AdresnicePage implements OnInit {
   .val { font-size: 11pt; color: #111; line-height: 1.3; }
   .val.name { font-size: 15pt; font-weight: 700; }
   .divider { height: 1px; background: #ddd; margin: 3pt 0; }
-  .val.otkup { font-size: 17pt; font-weight: 700; color: #c00; }
+  .val.otkup { font-size: 15pt; font-weight: 700; border: 1.5px solid #333; display: inline-block; padding: 2pt 8pt; border-radius: 3pt; }
   .val.note { font-size: 9pt; color: #555; font-style: italic; }
 </style>
 </head><body>${pagesHtml}</body></html>`;
@@ -221,11 +221,74 @@ export class AdresnicePage implements OnInit {
     setTimeout(() => win.print(), 600);
   }
 
-  printAll() { this.printItems(this.filtered); }
+  printList() {
+    const items = this.filtered;
+    if (!items.length) return;
+
+    const rows = items.map((a, i) => `
+      <tr>
+        <td class="num">${i + 1}</td>
+        <td class="bold">${escHtml(a.imePrezime)}</td>
+        <td>${escHtml(a.adresa)}</td>
+        <td>${escHtml(a.telefon)}</td>
+        <td class="otkup">${escHtml(a.otkup)}</td>
+        <td class="note">${escHtml(a.napomena || '')}</td>
+      </tr>`).join('');
+
+    const html = `<!DOCTYPE html><html lang="sr"><head><meta charset="utf-8">
+<title>Lista adresnica</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  @page { size: A4 portrait; margin: 12mm; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }
+  h2 { font-size: 13pt; margin-bottom: 8mm; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: #f0f0f0; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.3px; padding: 5pt 7pt; text-align: left; border: 1px solid #ccc; }
+  td { padding: 5pt 7pt; border: 1px solid #ddd; vertical-align: top; font-size: 10pt; }
+  tr:nth-child(even) td { background: #fafafa; }
+  .num { text-align: center; width: 24pt; color: #999; }
+  .bold { font-weight: 700; }
+  .otkup { font-weight: 700; white-space: nowrap; }
+  .note { font-style: italic; color: #555; font-size: 9pt; }
+</style>
+</head><body>
+<h2>${escHtml(this.countryName)} — lista adresnica (${items.length})</h2>
+<table>
+  <thead><tr>
+    <th>#</th><th>Ime i prezime</th><th>Adresa</th><th>Telefon</th><th>Otkup</th><th>Napomena</th>
+  </tr></thead>
+  <tbody>${rows}</tbody>
+</table>
+</body></html>`;
+
+    const win = window.open('', '_blank', 'width=960,height=720');
+    if (!win) { alert('Dozvolite popup prozore u browseru i pokušajte ponovo.'); return; }
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    win.onafterprint = () => win.close();
+    setTimeout(() => win.print(), 600);
+  }
 
   printSelected() {
     const items = this.adresnice.filter(a => this.selectedMap[a._id!]);
     this.printItems(items);
+  }
+
+  deleteSelected() {
+    const ids = Object.keys(this.selectedMap).filter(id => this.selectedMap[id]);
+    if (!ids.length) return;
+    if (!confirm(`Obrisati ${ids.length} selektovanih adresnica?`)) return;
+    let done = 0;
+    for (const id of ids) {
+      this.api.delete(this.country, id).subscribe(() => {
+        done++;
+        if (done === ids.length) {
+          this.selectedMap = {};
+          this.load();
+        }
+      });
+    }
   }
 
   goBack() { this.router.navigate(['/']); }

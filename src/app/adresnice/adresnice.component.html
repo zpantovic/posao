@@ -14,8 +14,7 @@
       <div class="form-grid">
         <div class="field">
           <label>Ime i prezime *</label>
-          <input type="text" name="imePrezime" [(ngModel)]="form.imePrezime"
-            placeholder="Marko Marković" required>
+          <input type="text" name="imePrezime" [(ngModel)]="form.imePrezime" required>
         </div>
         <div class="field">
           <label>Adresa *</label>
@@ -61,12 +60,15 @@
     <div class="tb-actions">
       <button class="btn-sm" (click)="selectAll()">☑ Izaberi sve</button>
       <button class="btn-sm" (click)="deselectAll()">☐ Poništi izbor</button>
-      <button class="btn-sm btn-print" (click)="printAll()">
-        🖨 Štampaj sve ({{ filtered.length }})
+      <button class="btn-sm btn-print" (click)="printList()">
+        🖨 Štampaj listu ({{ filtered.length }})
       </button>
       @if (selectedCount > 0) {
         <button class="btn-sm btn-print-sel" (click)="printSelected()">
           🖨 Štampaj selektovane ({{ selectedCount }})
+        </button>
+        <button class="btn-sm btn-del-sel" (click)="deleteSelected()">
+          🗑 Obriši selektovane ({{ selectedCount }})
         </button>
       }
     </div>

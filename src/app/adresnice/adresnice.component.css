@@ -167,6 +167,9 @@
 .btn-print-sel { background: #fffbeb; border-color: #d97706; color: #b45309; }
 .btn-print-sel:hover { background: #d97706; color: white; }
 
+.btn-del-sel { background: #fef2f2; border-color: #dc2626; color: #dc2626; }
+.btn-del-sel:hover { background: #dc2626; color: white; }
+
 /* LIST */
 .empty {
   background: white;
