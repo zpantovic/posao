@@ -1,0 +1,113 @@
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="top-bar">
+    <button class="back-btn" (click)="goBack()">← Nazad</button>
+    <h1>{{ flag }} {{ countryName }}</h1>
+    <span class="count-badge">{{ adresnice.length }} adresnica</span>
+  </header>
+
+  <!-- FORMA -->
+  <section class="card form-card">
+    <h2>{{ editingId ? '✏️ Izmeni adresnicu' : '+ Nova adresnica' }}</h2>
+    <form (ngSubmit)="submit()" #f="ngForm">
+      <div class="form-grid">
+        <div class="field">
+          <label>Ime i prezime *</label>
+          <input type="text" name="imePrezime" [(ngModel)]="form.imePrezime"
+            placeholder="Marko Marković" required>
+        </div>
+        <div class="field">
+          <label>Adresa *</label>
+          <input type="text" name="adresa" [(ngModel)]="form.adresa"
+            placeholder="Ulica i broj, grad" required>
+        </div>
+        <div class="field">
+          <label>Telefon * ({{ phonePrefix }})</label>
+          <input type="text" name="telefon" [(ngModel)]="form.telefon"
+            placeholder="065 123 456" required>
+        </div>
+        <div class="field">
+          <label>Otkup (prazno = 0.00 {{ currency }})</label>
+          <input type="text" name="otkup" [(ngModel)]="form.otkup"
+            placeholder="0.00">
+        </div>
+        <div class="field full">
+          <label>Napomena za kurira</label>
+          <textarea name="napomena" [(ngModel)]="form.napomena" rows="2"
+            placeholder="Pozvati pre dostave..."></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        @if (editingId) {
+          <button type="button" class="btn-outline" (click)="resetForm()">Odustani</button>
+        }
+        <button type="submit" class="btn-primary">
+          {{ editingId ? '💾 Sačuvaj izmene' : '+ Dodaj adresnicu' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- TOOLBAR -->
+  <section class="card toolbar">
+    <input
+      class="search"
+      type="text"
+      [value]="searchQuery"
+      (input)="searchQuery = $any($event.target).value"
+      placeholder="🔍  Pretraži po imenu, adresi ili telefonu..."
+    >
+    <div class="tb-actions">
+      <button class="btn-sm" (click)="selectAll()">☑ Izaberi sve</button>
+      <button class="btn-sm" (click)="deselectAll()">☐ Poništi izbor</button>
+      <button class="btn-sm btn-print" (click)="printAll()">
+        🖨 Štampaj sve ({{ filtered.length }})
+      </button>
+      @if (selectedCount > 0) {
+        <button class="btn-sm btn-print-sel" (click)="printSelected()">
+          🖨 Štampaj selektovane ({{ selectedCount }})
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- LISTA -->
+  <section class="list">
+    @if (filtered.length === 0) {
+      <div class="empty">
+        @if (searchQuery) {
+          <p>Nema rezultata za "<strong>{{ searchQuery }}</strong>"</p>
+        } @else {
+          <p>Još nema adresnica. Dodajte prvu adresnicu iznad.</p>
+        }
+      </div>
+    } @else {
+      <div class="grid">
+        @for (a of filtered; track a._id) {
+          <div class="adr-card" [class.selected]="isSelected(a._id!)">
+            <input type="checkbox"
+              [checked]="isSelected(a._id!)"
+              (change)="toggleSelect(a._id!)"
+              class="adr-check"
+            >
+            <div class="adr-body">
+              <div class="adr-name">{{ a.imePrezime }}</div>
+              <div class="adr-line">📍 {{ a.adresa }}</div>
+              <div class="adr-line">📞 {{ a.telefon }}</div>
+              <div class="adr-otkup">💰 {{ a.otkup }}</div>
+              @if (a.napomena) {
+                <div class="adr-note">💬 {{ a.napomena }}</div>
+              }
+            </div>
+            <div class="adr-actions">
+              <button class="btn-edit" (click)="editItem(a)">✏️ Izmeni</button>
+              <button class="btn-del" (click)="deleteItem(a._id!)">🗑 Obriši</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+</div>

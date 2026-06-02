@@ -1,0 +1,44 @@
+<div class="page">
+  <div class="header">
+    <div class="icon">📦</div>
+    <h1>Adresnice</h1>
+    <p>Odaberite državu za unos adresnica</p>
+  </div>
+
+  <div class="cards">
+    <button class="card" (click)="openLogin('bih')">
+      <span class="flag">🇧🇦</span>
+      <h2>Bosna i Hercegovina</h2>
+      <span class="badge">+387 · KM</span>
+    </button>
+    <button class="card" (click)="openLogin('cg')">
+      <span class="flag">🇲🇪</span>
+      <h2>Crna Gora</h2>
+      <span class="badge">+382 · EUR</span>
+    </button>
+  </div>
+</div>
+
+@if (showModal) {
+  <div class="overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>{{ selectedCountry === 'bih' ? '🇧🇦 Bosna i Hercegovina' : '🇲🇪 Crna Gora' }}</h3>
+      <p>Unesite šifru za pristup</p>
+      <input
+        type="password"
+        [(ngModel)]="password"
+        (keyup.enter)="login()"
+        placeholder="Šifra"
+        [class.invalid]="error"
+        autofocus
+      />
+      @if (error) {
+        <p class="error-msg">Pogrešna šifra. Pokušajte ponovo.</p>
+      }
+      <div class="modal-btns">
+        <button class="btn-sec" (click)="closeModal()">Odustani</button>
+        <button class="btn-pri" (click)="login()">Ulaz →</button>
+      </div>
+    </div>
+  </div>
+}
