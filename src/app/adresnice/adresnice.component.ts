@@ -181,33 +181,33 @@ export class AdresnicePage implements OnInit {
     const html = `<!DOCTYPE html><html lang="sr"><head><meta charset="utf-8"><title>Adresnice - štampa</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  @page { size: A4 landscape; margin: 8mm; }
-  body { font-family: Arial, Helvetica, sans-serif; }
+  @page { size: A4 landscape; margin: 0; }
+  html, body { width: 297mm; height: 210mm; font-family: Arial, Helvetica, sans-serif; }
   .page {
-    width: 281mm;
-    height: 194mm;
+    width: 297mm;
+    height: 210mm;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    border: 1px solid #555;
     page-break-after: always;
+    break-after: page;
   }
-  .page:last-child { page-break-after: avoid; }
+  .page:last-child { page-break-after: avoid; break-after: avoid; }
   .slot {
-    padding: 9mm 10mm;
-    border: 1px solid #bbb;
+    padding: 9mm 11mm;
+    border: 0.5pt dashed #ccc;
     display: flex;
     flex-direction: column;
     gap: 5pt;
     overflow: hidden;
   }
-  .slot.empty { background: #f9f9f9; }
+  .slot.empty { background: #fafafa; }
   .row { display: flex; flex-direction: column; gap: 1pt; }
   .lbl { font-size: 7pt; color: #999; text-transform: uppercase; letter-spacing: 0.4px; }
   .val { font-size: 11pt; color: #111; line-height: 1.3; }
   .val.name { font-size: 15pt; font-weight: 700; }
   .divider { height: 1px; background: #ddd; margin: 3pt 0; }
-  .val.otkup { font-size: 15pt; font-weight: 700; border: 1.5px solid #333; display: inline-block; padding: 2pt 8pt; border-radius: 3pt; }
+  .val.otkup { font-size: 15pt; font-weight: 700; border: 1.5pt solid #333; display: inline-block; padding: 2pt 8pt; border-radius: 3pt; }
   .val.note { font-size: 9pt; color: #555; font-style: italic; }
 </style>
 </head><body>${pagesHtml}</body></html>`;
