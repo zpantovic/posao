@@ -178,26 +178,39 @@ export class AdresnicePage implements OnInit {
       </div>`;
     }).join('');
 
-    const html = `<!DOCTYPE html><html lang="sr"><head><meta charset="utf-8"><title>Adresnice - štampa</title>
+    const html = `<!DOCTYPE html><html lang="sr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=1260, initial-scale=1">
+<title>Adresnice - štampa</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   @page { size: A4 landscape; margin: 0; }
-  html, body { width: 297mm; height: 210mm; font-family: Arial, Helvetica, sans-serif; }
+  html { margin: 0; padding: 0; }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
   .page {
     width: 297mm;
     height: 210mm;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 148.5mm 148.5mm;
+    grid-template-rows: 105mm 105mm;
     page-break-after: always;
     break-after: page;
+    overflow: hidden;
   }
   .page:last-child { page-break-after: avoid; break-after: avoid; }
   .slot {
-    padding: 9mm 11mm;
-    border: 0.5pt dashed #ccc;
+    width: 148.5mm;
+    height: 105mm;
+    padding: 8mm 12mm;
+    border: 0.5pt dashed #bbb;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 5pt;
     overflow: hidden;
   }
@@ -209,10 +222,35 @@ export class AdresnicePage implements OnInit {
   .divider { height: 1px; background: #ddd; margin: 3pt 0; }
   .val.otkup { font-size: 15pt; font-weight: 700; border: 1.5pt solid #333; display: inline-block; padding: 2pt 8pt; border-radius: 3pt; }
   .val.note { font-size: 9pt; color: #555; font-style: italic; }
+  @media screen {
+    body { background: #e8eaf0; padding: 16px; }
+    .notice {
+      background: #fff8e1;
+      border: 1.5px solid #f9a825;
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      font-size: 11pt;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+    .page { margin-bottom: 16px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  }
+  @media print {
+    .notice { display: none; }
+    body { background: none; padding: 0; }
+  }
 </style>
-</head><body>${pagesHtml}</body></html>`;
+</head><body>
+<div class="notice">
+  &#9888; <strong>Pre štampe u dijalogu obavezno postaviti:</strong>
+  &nbsp;|&nbsp; Margine: <strong>Nema (None)</strong>
+  &nbsp;|&nbsp; Razmera: <strong>100%</strong> (ne "Fit to page")
+  &nbsp;|&nbsp; Veličina: <strong>A4 Landscape</strong>
+</div>
+${pagesHtml}</body></html>`;
 
-    const win = window.open('', '_blank', 'width=960,height=720');
+    const win = window.open('', '_blank', 'width=1400,height=960');
     if (!win) { alert('Dozvolite popup prozore u browseru i pokušajte ponovo.'); return; }
     win.document.write(html);
     win.document.close();
