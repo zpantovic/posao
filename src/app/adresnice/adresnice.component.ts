@@ -170,8 +170,8 @@ export class AdresnicePage implements OnInit {
           <div class="row"><span class="lbl">Primalac</span><span class="val name">${escHtml(a.imePrezime)}</span></div>
           <div class="row"><span class="lbl">Adresa</span><span class="val">${escHtml(a.adresa)}</span></div>
           <div class="row"><span class="lbl">Telefon</span><span class="val">${escHtml(a.telefon)}</span></div>
-          <div class="divider"></div>
-          <div class="row"><span class="lbl">Otkup</span><span class="val otkup">${escHtml(a.otkup)}</span></div>
+          ${this.country !== 'cg' ? `<div class="divider"></div>
+          <div class="row"><span class="lbl">Otkup</span><span class="val otkup">${escHtml(a.otkup)}</span></div>` : ''}
           ${a.napomena ? `<div class="row"><span class="lbl">Napomena</span><span class="val note">${escHtml(a.napomena)}</span></div>` : ''}
           ` : ''}
         </div>`).join('')}
@@ -269,7 +269,7 @@ ${pagesHtml}</body></html>`;
         <td class="bold">${escHtml(a.imePrezime)}</td>
         <td>${escHtml(a.adresa)}</td>
         <td>${escHtml(a.telefon)}</td>
-        <td class="otkup">${escHtml(a.otkup)}</td>
+        ${this.country !== 'cg' ? `<td class="otkup">${escHtml(a.otkup)}</td>` : ''}
         <td class="note">${escHtml(a.napomena || '')}</td>
       </tr>`).join('');
 
@@ -293,7 +293,7 @@ ${pagesHtml}</body></html>`;
 <h2>${escHtml(this.countryName)} — lista adresnica (${items.length})</h2>
 <table>
   <thead><tr>
-    <th>#</th><th>Ime i prezime</th><th>Adresa</th><th>Telefon</th><th>Otkup</th><th>Napomena</th>
+    <th>#</th><th>Ime i prezime</th><th>Adresa</th><th>Telefon</th>${this.country !== 'cg' ? '<th>Otkup</th>' : ''}<th>Napomena</th>
   </tr></thead>
   <tbody>${rows}</tbody>
 </table>

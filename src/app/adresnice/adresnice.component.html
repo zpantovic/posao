@@ -100,7 +100,10 @@
               <div class="adr-name">{{ a.imePrezime }}</div>
               <div class="adr-line">📍 {{ a.adresa }}</div>
               <div class="adr-line">📞 {{ a.telefon }}</div>
-              <div class="adr-otkup">💰 {{ a.otkup }}</div>
+              <!-- otkup se ne prikazuje za CG -->
+              @if (country !== 'cg') {
+                <div class="adr-otkup">💰 {{ a.otkup }}</div>
+              }
               @if (a.napomena) {
                 <div class="adr-note">💬 {{ a.napomena }}</div>
               }
