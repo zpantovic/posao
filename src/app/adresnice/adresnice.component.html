@@ -26,11 +26,14 @@
           <input type="text" name="telefon" [(ngModel)]="form.telefon"
             placeholder="065 123 456" required>
         </div>
-        <div class="field">
-          <label>Otkup (prazno = 0.00 {{ currency }})</label>
-          <input type="text" name="otkup" [(ngModel)]="form.otkup"
-            placeholder="0.00">
-        </div>
+        <!-- otkup se ne unosi za CG; ukloni @if da vratiš polje -->
+        @if (country !== 'cg') {
+          <div class="field">
+            <label>Otkup (prazno = 0.00 {{ currency }})</label>
+            <input type="text" name="otkup" [(ngModel)]="form.otkup"
+              placeholder="0.00">
+          </div>
+        }
         <div class="field full">
           <label>Napomena za kurira</label>
           <textarea name="napomena" [(ngModel)]="form.napomena" rows="2"
