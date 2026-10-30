@@ -27,7 +27,7 @@
             placeholder="065 123 456" required>
         </div>
         <!-- otkup se ne unosi za CG; ukloni @if da vratiš polje -->
-        @if (country !== 'cg') {
+        @if (true) {
           <div class="field">
             <label>Otkup (prazno = 0.00 {{ currency }})</label>
             <input type="text" name="otkup" [(ngModel)]="form.otkup"
@@ -101,7 +101,7 @@
               <div class="adr-line">📍 {{ a.adresa }}</div>
               <div class="adr-line">📞 {{ a.telefon }}</div>
               <!-- otkup se ne prikazuje za CG -->
-              @if (country !== 'cg') {
+              @if (true) {
                 <div class="adr-otkup">💰 {{ a.otkup }}</div>
               }
               @if (a.napomena) {
