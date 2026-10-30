@@ -186,14 +186,26 @@ export class AdresnicePage implements OnInit {
   }
 
   submit() {
-    if (!this.form.imePrezime.trim() || !this.form.adresa.trim() || !this.form.telefon.trim()) return;
+    if (!this.form.imePrezime.trim() || !this.form.telefon.trim()) return;
+
+    let address = this.form.adresa.trim();
+
+    if (this.country === 'cg') {
+      if (!this.selectedPlace || !this.streetAddress.trim()) {
+        alert('Prvo izaberite mesto, pa unesite ulicu i broj.');
+        return;
+      }
+      address = `${this.streetAddress.trim()}, ${this.selectedPlace}`;
+    }
+
+    if (!address) return;
 
     const data = {
       imePrezime: this.form.imePrezime.trim(),
-      adresa: this.form.adresa.trim(),
+      adresa: address,
       telefon: this.formatPhone(this.form.telefon),
       otkup: this.formatOtkup(this.form.otkup),
-      napomena: this.form.napomena.trim(),
+      napomena: this.form.napomena.trim()
     };
 
     if (this.editingId) {
