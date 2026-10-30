@@ -18,27 +18,33 @@
         </div>
         
         @if (country === 'cg') {
+          
           <div class="field">
             <label>Mesto * (pretraži i izaberi)</label>
+          
             <input
               type="text"
               name="placeSearch"
               [(ngModel)]="placeSearch"
-              placeholder="Ukucaj mesto, npr. Barajevo"
+              placeholder="Počni da kucaš mesto..."
               autocomplete="off"
               (ngModelChange)="selectedPlace = ''; streetAddress = ''"
+              (focus)="showPlaces = true"
             >
-            <select
-              name="selectedPlace"
-              [(ngModel)]="selectedPlace"
-              (ngModelChange)="placeSearch = selectedPlace"
-              required
-            >
-              <option value="">-- Izaberi mesto --</option>
-              @for (place of filteredPlaces; track place) {
-                <option [value]="place">{{ place }}</option>
-              }
-            </select>
+          
+            @if (showPlaces && placeSearch.trim() && filteredPlaces.length > 0) {
+              <div class="place-suggestions">
+                @for (place of filteredPlaces; track place) {
+                  <button
+                    type="button"
+                    class="place-option"
+                    (click)="choosePlace(place)"
+                  >
+                    {{ place }}
+                  </button>
+                }
+              </div>
+            }
           </div>
 
           <div class="field">
