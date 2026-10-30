@@ -26,7 +26,7 @@
               [(ngModel)]="placeSearch"
               placeholder="Ukucaj mesto, npr. Barajevo"
               autocomplete="off"
-              (ngModelChange)="selectedPlace = ''"
+              (ngModelChange)="selectedPlace = ''; streetAddress = ''"
             >
             <select
               name="selectedPlace"
