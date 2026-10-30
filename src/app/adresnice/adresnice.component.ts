@@ -221,6 +221,7 @@ export class AdresnicePage implements OnInit {
     }
   }
 
+  
   editItem(a: Adresnica) {
     this.editingId = a._id!;
     this.form = {
@@ -230,8 +231,32 @@ export class AdresnicePage implements OnInit {
       otkup: a.otkup,
       napomena: a.napomena || ''
     };
+
+    if (this.country === 'cg') {
+      const matchingPlace = [...this.places]
+        .sort((a, b) => b.length - a.length)
+        .find(place =>
+          this.normalizePlace(a.adresa).endsWith(
+            this.normalizePlace(', ' + place)
+          )
+        );
+
+      if (matchingPlace) {
+        this.selectedPlace = matchingPlace;
+        this.placeSearch = matchingPlace;
+        this.streetAddress = a.adresa.slice(
+          0, -(matchingPlace.length + 2)
+        );
+      } else {
+        this.selectedPlace = '';
+        this.placeSearch = '';
+        this.streetAddress = a.adresa;
+      }
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
 
   deleteItem(id: string) {
     if (!confirm('Obrisati ovu adresnicu?')) return;
@@ -241,10 +266,21 @@ export class AdresnicePage implements OnInit {
     });
   }
 
+  
   resetForm() {
     this.editingId = null;
-    this.form = { imePrezime: '', adresa: '', telefon: '', otkup: '', napomena: '' };
+    this.form = {
+      imePrezime: '',
+      adresa: '',
+      telefon: '',
+      otkup: '',
+      napomena: ''
+    };
+    this.selectedPlace = '';
+    this.placeSearch = '';
+    this.streetAddress = '';
   }
+
 
   printItems(items: Adresnica[]) {
     if (!items.length) return;
