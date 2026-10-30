@@ -1,3 +1,4 @@
+
 <div class="page">
   <div class="header">
     <div class="icon">📦</div>
@@ -12,9 +13,9 @@
       <span class="badge">+387 · KM</span>
     </button>
     <button class="card" (click)="openLogin('cg')">
-      <span class="flag">🇲🇪</span>
-      <h2>Crna Gora</h2>
-      <span class="badge">+382 · EUR</span>
+      <span class="flag">🇷🇸</span>
+      <h2>Srbija</h2>
+      <span class="badge">+381 · RSD</span>
     </button>
   </div>
 </div>
@@ -22,7 +23,7 @@
 @if (showModal) {
   <div class="overlay" (click)="closeModal()">
     <div class="modal" (click)="$event.stopPropagation()">
-      <h3>{{ selectedCountry === 'bih' ? '🇧🇦 Bosna i Hercegovina' : '🇲🇪 Crna Gora' }}</h3>
+      <h3>{{ selectedCountry === 'bih' ? '🇧🇦 Bosna i Hercegovina' : '🇷🇸 Srbija' }}</h3>
       <p>Unesite šifru za pristup</p>
       <input
         type="password"
