@@ -29,6 +29,7 @@ export class AdresnicePage implements OnInit {
   searchQuery = '';
   
   selectedPlace = '';
+  showPlaces = false;
   placeSearch = '';
   streetAddress = '';
 
@@ -108,6 +109,12 @@ export class AdresnicePage implements OnInit {
     return this.places.filter(place =>
       this.normalizePlace(place).includes(q)
     );
+  }
+
+  choosePlace(place: string) {
+    this.selectedPlace = place;
+    this.placeSearch = place;
+    this.showPlaces = false;
   }
 
   selectedMap: { [id: string]: boolean } = {};
