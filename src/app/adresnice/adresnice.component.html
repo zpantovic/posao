@@ -16,18 +16,68 @@
           <label>Ime i prezime *</label>
           <input type="text" name="imePrezime" [(ngModel)]="form.imePrezime" required>
         </div>
-        <div class="field">
-          <label>Adresa *</label>
-          <input type="text" name="adresa" [(ngModel)]="form.adresa"
-            placeholder="Ulica i broj, grad" required>
-        </div>
+        
+        @if (country === 'cg') {
+          
+          <div class="field">
+            <label>Mesto * (pretraži i izaberi)</label>
+          
+            <input
+              type="text"
+              name="placeSearch"
+              [(ngModel)]="placeSearch"
+              placeholder="Počni da kucaš mesto..."
+              autocomplete="off"
+              (ngModelChange)="selectedPlace = ''; streetAddress = ''"
+              (focus)="showPlaces = true"
+            >
+          
+            @if (showPlaces && placeSearch.trim() && filteredPlaces.length > 0) {
+              <div class="place-suggestions">
+                @for (place of filteredPlaces; track place) {
+                  <button
+                    type="button"
+                    class="place-option"
+                    (click)="choosePlace(place)"
+                  >
+                    {{ place }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="field">
+            <label>Ulica i broj *</label>
+            <input
+              type="text"
+              name="streetAddress"
+              [(ngModel)]="streetAddress"
+              placeholder="Npr. Glavna 12"
+              [disabled]="!selectedPlace"
+              required
+            >
+          </div>
+        } @else {
+          <div class="field">
+            <label>Adresa *</label>
+            <input
+              type="text"
+              name="adresa"
+              [(ngModel)]="form.adresa"
+              placeholder="Ulica i broj, grad"
+              required
+            >
+          </div>
+        }
+
         <div class="field">
           <label>Telefon * ({{ phonePrefix }})</label>
           <input type="text" name="telefon" [(ngModel)]="form.telefon"
             placeholder="065 123 456" required>
         </div>
         <!-- otkup se ne unosi za CG; ukloni @if da vratiš polje -->
-        @if (country !== 'cg') {
+        @if (true) {
           <div class="field">
             <label>Otkup (prazno = 0.00 {{ currency }})</label>
             <input type="text" name="otkup" [(ngModel)]="form.otkup"
@@ -101,7 +151,7 @@
               <div class="adr-line">📍 {{ a.adresa }}</div>
               <div class="adr-line">📞 {{ a.telefon }}</div>
               <!-- otkup se ne prikazuje za CG -->
-              @if (country !== 'cg') {
+              @if (true) {
                 <div class="adr-otkup">💰 {{ a.otkup }}</div>
               }
               @if (a.napomena) {

@@ -27,6 +27,96 @@ export class AdresnicePage implements OnInit {
 
   adresnice: Adresnica[] = [];
   searchQuery = '';
+  
+  selectedPlace = '';
+  showPlaces = false;
+  placeSearch = '';
+  streetAddress = '';
+
+  places: string[] = [
+    'Aranđelovac',
+    'Baćevac',
+    'Banatski Brestovac',
+    'Banatsko Novo Selo',
+    'Banovo brdo',
+    'Barajevo',
+    'Barič',
+    'Bele vode',
+    'Beli Potok',
+    'Borča',
+    'Boždarevac',
+    'Cerak',
+    'Dolovo',
+    'Dučina',
+    'Glogonj',
+    'Grabovac',
+    'Guncati',
+    'Ivanovo',
+    'Jabuka',
+    'Jagnjilo',
+    'Kačarevo',
+    'Kijevo',
+    'Kovačevac',
+    'Kovin',
+    'Krnjača',
+    'Krtinska',
+    'Lisović',
+    'Makiš',
+    'Mali Požarevac',
+    'Meljak',
+    'Miljakovac',
+    'Mislođin',
+    'Mladenovac',
+    'Nemenikuće',
+    'Obrenovac',
+    'Omoljica',
+    'Ovča',
+    'Pančevo',
+    'Petlovo brdo',
+    'Rakovica',
+    'Ralja',
+    'Resnik',
+    'Rogača',
+    'Rožanci',
+    'Senjak',
+    'Sopot',
+    'Sremčica',
+    'Starčevo',
+    'Stepa Stepanović',
+    'Stubline',
+    'Šiljakovac',
+    'Urovci',
+    'Velika Moštanica',
+    'Veliki Borak',
+    'Vidikovac',
+    'Vlaška',
+    'Vranić',
+    'Vršac',
+    'Zvečka',
+    'Žarkovo',
+    'Železnik'
+  ];
+
+  normalizePlace(value: string): string {
+    return value.toLocaleLowerCase('sr')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'dj');
+  }
+
+  get filteredPlaces(): string[] {
+    const q = this.normalizePlace(this.placeSearch.trim());
+    return this.places.filter(place =>
+      this.normalizePlace(place).includes(q)
+    );
+  }
+
+  choosePlace(place: string) {
+    this.selectedPlace = place;
+    this.placeSearch = place;
+    this.showPlaces = false;
+  }
+
   selectedMap: { [id: string]: boolean } = {};
 
   editingId: string | null = null;
@@ -46,10 +136,10 @@ export class AdresnicePage implements OnInit {
       this.currency = 'KM';
       this.flag = '🇧🇦';
     } else {
-      this.countryName = 'Crna Gora';
-      this.phonePrefix = '+382';
-      this.currency = 'EUR';
-      this.flag = '🇲🇪';
+      this.countryName = 'Srbija';
+      this.phonePrefix = '+381';
+      this.currency = 'RSD';
+      this.flag = '🇷🇸';
     }
 
     this.load();
@@ -96,21 +186,33 @@ export class AdresnicePage implements OnInit {
   }
 
   formatOtkup(raw: string): string {
-    const t = raw.replace(/\s*(KM|EUR)\s*$/i, '').trim();
+    const t = raw.replace(/\s*(KM|EUR|RSD)\s*$/i, '').trim();
     if (!t) return `0.00 ${this.currency}`;
     const n = parseFloat(t);
     return isNaN(n) ? `${t} ${this.currency}` : `${n.toFixed(2)} ${this.currency}`;
   }
 
   submit() {
-    if (!this.form.imePrezime.trim() || !this.form.adresa.trim() || !this.form.telefon.trim()) return;
+    if (!this.form.imePrezime.trim() || !this.form.telefon.trim()) return;
+
+    let address = this.form.adresa.trim();
+
+    if (this.country === 'cg') {
+      if (!this.selectedPlace || !this.streetAddress.trim()) {
+        alert('Prvo izaberite mesto, pa unesite ulicu i broj.');
+        return;
+      }
+      address = `${this.streetAddress.trim()}, ${this.selectedPlace}`;
+    }
+
+    if (!address) return;
 
     const data = {
       imePrezime: this.form.imePrezime.trim(),
-      adresa: this.form.adresa.trim(),
+      adresa: address,
       telefon: this.formatPhone(this.form.telefon),
       otkup: this.formatOtkup(this.form.otkup),
-      napomena: this.form.napomena.trim(),
+      napomena: this.form.napomena.trim()
     };
 
     if (this.editingId) {
@@ -126,6 +228,7 @@ export class AdresnicePage implements OnInit {
     }
   }
 
+  
   editItem(a: Adresnica) {
     this.editingId = a._id!;
     this.form = {
@@ -135,8 +238,32 @@ export class AdresnicePage implements OnInit {
       otkup: a.otkup,
       napomena: a.napomena || ''
     };
+
+    if (this.country === 'cg') {
+      const matchingPlace = [...this.places]
+        .sort((a, b) => b.length - a.length)
+        .find(place =>
+          this.normalizePlace(a.adresa).endsWith(
+            this.normalizePlace(', ' + place)
+          )
+        );
+
+      if (matchingPlace) {
+        this.selectedPlace = matchingPlace;
+        this.placeSearch = matchingPlace;
+        this.streetAddress = a.adresa.slice(
+          0, -(matchingPlace.length + 2)
+        );
+      } else {
+        this.selectedPlace = '';
+        this.placeSearch = '';
+        this.streetAddress = a.adresa;
+      }
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
 
   deleteItem(id: string) {
     if (!confirm('Obrisati ovu adresnicu?')) return;
@@ -146,10 +273,21 @@ export class AdresnicePage implements OnInit {
     });
   }
 
+  
   resetForm() {
     this.editingId = null;
-    this.form = { imePrezime: '', adresa: '', telefon: '', otkup: '', napomena: '' };
+    this.form = {
+      imePrezime: '',
+      adresa: '',
+      telefon: '',
+      otkup: '',
+      napomena: ''
+    };
+    this.selectedPlace = '';
+    this.placeSearch = '';
+    this.streetAddress = '';
   }
+
 
   printItems(items: Adresnica[]) {
     if (!items.length) return;
@@ -170,7 +308,7 @@ export class AdresnicePage implements OnInit {
           <div class="row"><span class="lbl">Primalac</span><span class="val name">${escHtml(a.imePrezime)}</span></div>
           <div class="row"><span class="lbl">Adresa</span><span class="val">${escHtml(a.adresa)}</span></div>
           <div class="row"><span class="lbl">Telefon</span><span class="val">${escHtml(a.telefon)}</span></div>
-          ${this.country !== 'cg' ? `<div class="divider"></div>
+          ${true ? `<div class="divider"></div>
           <div class="row"><span class="lbl">Otkup</span><span class="val otkup">${escHtml(a.otkup)}</span></div>` : ''}
           ${a.napomena ? `<div class="row"><span class="lbl">Napomena</span><span class="val note">${escHtml(a.napomena)}</span></div>` : ''}
           ` : ''}
@@ -269,7 +407,7 @@ ${pagesHtml}</body></html>`;
         <td class="bold">${escHtml(a.imePrezime)}</td>
         <td>${escHtml(a.adresa)}</td>
         <td>${escHtml(a.telefon)}</td>
-        ${this.country !== 'cg' ? `<td class="otkup">${escHtml(a.otkup)}</td>` : ''}
+        ${true ? `<td class="otkup">${escHtml(a.otkup)}</td>` : ''}
         <td class="note">${escHtml(a.napomena || '')}</td>
       </tr>`).join('');
 
@@ -293,7 +431,7 @@ ${pagesHtml}</body></html>`;
 <h2>${escHtml(this.countryName)} — lista adresnica (${items.length})</h2>
 <table>
   <thead><tr>
-    <th>#</th><th>Ime i prezime</th><th>Adresa</th><th>Telefon</th>${this.country !== 'cg' ? '<th>Otkup</th>' : ''}<th>Napomena</th>
+    <th>#</th><th>Ime i prezime</th><th>Adresa</th><th>Telefon</th>${true ? '<th>Otkup</th>' : ''}<th>Napomena</th>
   </tr></thead>
   <tbody>${rows}</tbody>
 </table>
