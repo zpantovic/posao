@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 const PASSWORDS: Record<string, string> = {
-  bih: 'BIHbjutiglam',
-  cg: 'CGbjutiglam'
+  bih: 'bosna',
+  cg: 'srbija'
 };
 
 @Component({
