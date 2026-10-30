@@ -27,6 +27,89 @@ export class AdresnicePage implements OnInit {
 
   adresnice: Adresnica[] = [];
   searchQuery = '';
+  
+  selectedPlace = '';
+  placeSearch = '';
+  streetAddress = '';
+
+  places: string[] = [
+    'Aranđelovac',
+    'Baćevac',
+    'Banatski Brestovac',
+    'Banatsko Novo Selo',
+    'Banovo brdo',
+    'Barajevo',
+    'Barič',
+    'Bele vode',
+    'Beli Potok',
+    'Borča',
+    'Boždarevac',
+    'Cerak',
+    'Dolovo',
+    'Dučina',
+    'Glogonj',
+    'Grabovac',
+    'Guncati',
+    'Ivanovo',
+    'Jabuka',
+    'Jagnjilo',
+    'Kačarevo',
+    'Kijevo',
+    'Kovačevac',
+    'Kovin',
+    'Krnjača',
+    'Krtinska',
+    'Lisović',
+    'Makiš',
+    'Mali Požarevac',
+    'Meljak',
+    'Miljakovac',
+    'Mislođin',
+    'Mladenovac',
+    'Nemenikuće',
+    'Obrenovac',
+    'Omoljica',
+    'Ovča',
+    'Pančevo',
+    'Petlovo brdo',
+    'Rakovica',
+    'Ralja',
+    'Resnik',
+    'Rogača',
+    'Rožanci',
+    'Senjak',
+    'Sopot',
+    'Sremčica',
+    'Starčevo',
+    'Stepa Stepanović',
+    'Stubline',
+    'Šiljakovac',
+    'Urovci',
+    'Velika Moštanica',
+    'Veliki Borak',
+    'Vidikovac',
+    'Vlaška',
+    'Vranić',
+    'Vršac',
+    'Zvečka',
+    'Žarkovo',
+    'Železnik'
+  ];
+
+  normalizePlace(value: string): string {
+    return value.toLocaleLowerCase('sr')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'dj');
+  }
+
+  get filteredPlaces(): string[] {
+    const q = this.normalizePlace(this.placeSearch.trim());
+    return this.places.filter(place =>
+      this.normalizePlace(place).includes(q)
+    );
+  }
+
   selectedMap: { [id: string]: boolean } = {};
 
   editingId: string | null = null;
