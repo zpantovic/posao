@@ -40,7 +40,6 @@ export class AdresnicePage implements OnInit {
     'Banatsko Novo Selo',
     'Banovo brdo',
     'Barajevo',
-    'Barič',
     'Bele vode',
     'Beli Potok',
     'Borča',
@@ -94,7 +93,10 @@ export class AdresnicePage implements OnInit {
     'Vršac',
     'Zvečka',
     'Žarkovo',
-    'Železnik'
+    'Železnik',
+    'Novi Beograd',
+    'Surčin',
+    'Zemun'
   ];
 
   normalizePlace(value: string): string {
